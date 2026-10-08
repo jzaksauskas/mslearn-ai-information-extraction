@@ -7,20 +7,22 @@ from azure.search.documents import SearchClient
 def main():
 
     # Clear the console
-    os.system('cls' if os.name=='nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")
 
     try:
 
         # Get config settings
         load_dotenv()
-        search_endpoint = os.getenv('SEARCH_ENDPOINT')
-        query_key = os.getenv('QUERY_KEY')
-        index = os.getenv('INDEX_NAME')
+        search_endpoint = os.getenv("SEARCH_ENDPOINT")
+        query_key = os.getenv("QUERY_KEY")
+        index = os.getenv("INDEX_NAME")
 
         # Get a search client
-        search_client = SearchClient(search_endpoint, index, AzureKeyCredential(query_key))
+        search_client = SearchClient(
+            search_endpoint, index, AzureKeyCredential(query_key)
+        )
 
-         # Loop until the user types 'quit'
+        # Loop until the user types 'quit'
         while True:
             # Get query text
             query_text = input("Enter a query (or type 'quit' to exit): ")
@@ -31,20 +33,20 @@ def main():
                 continue
 
             # Clear the console
-            os.system('cls' if os.name=='nt' else 'clear')
-            
+            os.system("cls" if os.name == "nt" else "clear")
+
             # Search the index
             found_documents = search_client.search(
                 search_text=query_text,
                 select=["title", "locations", "persons", "keyPhrases"],
                 order_by=["title"],
-                include_total_count=True
+                include_total_count=True,
             )
 
             # Parse the results
             print(f"\nSearch returned {found_documents.get_count()} documents:")
             for document in found_documents:
-                print(f"\nDocument: {document["title"]}")
+                print(f"\nDocument: {document['title']}")
                 print(" - Locations:")
                 for location in document["locations"]:
                     print(f"   - {location}")
@@ -59,6 +61,5 @@ def main():
         print(ex)
 
 
-
 if __name__ == "__main__":
-    main()        
+    main()
